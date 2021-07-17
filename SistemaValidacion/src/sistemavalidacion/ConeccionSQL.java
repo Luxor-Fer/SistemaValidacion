@@ -20,7 +20,7 @@ public class ConeccionSQL {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connect = DriverManager.getConnection("jdbc:mysql://localhost/sis_validacion","root","");
-            System.out.println("conectado");
+            //System.out.println("conectado");
             //JOptionPane.showInternalMessageDialog(null, "Se conecto a la base de datos");
         } catch (Exception ex) {
             //JOptionPane.showMessageDialog(null, "no se conecto a la bd: "+ ex);
