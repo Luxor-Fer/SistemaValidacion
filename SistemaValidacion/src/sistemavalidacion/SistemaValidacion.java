@@ -19,9 +19,7 @@ public class SistemaValidacion {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ConeccionSQL cc = new ConeccionSQL();
-        Connection cn = cc.conectar();
-        
+
     }
     
 }

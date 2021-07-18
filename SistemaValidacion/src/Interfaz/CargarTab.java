@@ -63,8 +63,8 @@ public class CargarTab {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(
                     null,
-                    "Error: " + e.getMessage(),
-                    "NO SE PUEDE CONECTAR CON LA BASE DE DATOS ",
+                    "Error: " + "No se puede conectar a la base de datos",
+                    "Error Base de Datos ",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
