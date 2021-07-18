@@ -5,6 +5,8 @@
  */
 package Interfaz;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author USUARIO
@@ -17,12 +19,44 @@ public class Interfaz extends javax.swing.JFrame {
     public Interfaz() {
         initComponents();
         cargarDatos();
+        estadoBotonCargarValidacion();
     }
     
     public void cargarDatos (){
       jtUsuario.removeAll();
       CargarTab tabla= new CargarTab();
       tabla.tbUsuario(jtUsuario);
+    }
+    public void estadoBotonCargarValidacion(){
+        System.out.println("entro a ver estado");
+        if(existenSeleccionados()){
+            btnCrear.setEnabled(true);
+        }else{
+            btnCrear.setEnabled(false);
+        }
+    }
+    public boolean existenSeleccionados(){
+        int tamaño=0;
+        int i=0;
+        int resp=0;
+        System.out.println("entro a verificar");
+     
+            System.out.println("si fue valido");
+            tamaño=jtUsuario.getColumnCount();
+            while (i<tamaño){
+                 boolean tmp= (boolean)jtUsuario.getValueAt(i, 0);
+                if(tmp){
+                    System.out.println("marca true");
+                    resp++;
+                }
+                i++;
+            }
+            if(resp>0){
+                return true;
+            }
+            
+       
+        return false;
     }
 
     /**
@@ -54,6 +88,11 @@ public class Interfaz extends javax.swing.JFrame {
         });
 
         btnCrear.setText("Crear Validación");
+        btnCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -99,6 +138,11 @@ public class Interfaz extends javax.swing.JFrame {
 
             }
         ));
+        jtUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtUsuarioMouseClicked(evt);
+            }
+        });
         jScrollPane9.setViewportView(jtUsuario);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -145,6 +189,32 @@ public class Interfaz extends javax.swing.JFrame {
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
       cargarDatos();
     }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+        int i=0;
+        int tamañoTb=jtUsuario.getColumnCount();
+        ArrayList<String> usuarios= new ArrayList();
+        while (i<tamañoTb){
+            boolean resp= (boolean)jtUsuario.getValueAt(i, 0);
+            if(resp){
+                usuarios.add(jtUsuario.getValueAt(i, 1).toString());
+            }
+            i++;
+        }
+        
+        if(usuarios.size()>0){
+            PreValidacion vpv= new PreValidacion(usuarios);
+            this.setVisible(false);
+            vpv.setVisible(true);
+        }
+        
+        
+    }//GEN-LAST:event_btnCrearActionPerformed
+
+    private void jtUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtUsuarioMouseClicked
+        System.out.println("entro al eevento");
+        estadoBotonCargarValidacion();
+    }//GEN-LAST:event_jtUsuarioMouseClicked
 
     /**
      * @param args the command line arguments
