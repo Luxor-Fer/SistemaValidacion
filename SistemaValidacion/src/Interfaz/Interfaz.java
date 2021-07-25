@@ -204,7 +204,7 @@ public class Interfaz extends javax.swing.JFrame {
         
         if(usuarios.size()>0){
             PreValidacion vpv= new PreValidacion(usuarios);
-            this.setVisible(false);
+            //this.setVisible(false);
             vpv.setVisible(true);
         }
         
