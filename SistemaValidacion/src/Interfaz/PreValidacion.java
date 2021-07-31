@@ -5,13 +5,10 @@
  */
 package Interfaz;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import Modelo.*;
 import java.util.ArrayList;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -59,7 +56,6 @@ public class PreValidacion extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setFocusable(false);
-        setMaximumSize(new java.awt.Dimension(600, 400));
         setMinimumSize(new java.awt.Dimension(450, 450));
 
         btnActualizar.setText("CANCELAR");
@@ -70,6 +66,11 @@ public class PreValidacion extends javax.swing.JFrame {
         });
 
         btnCrear.setText("ENVIAR");
+        btnCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearActionPerformed(evt);
+            }
+        });
 
         panel.setLayout(new java.awt.GridLayout(0, 1));
         jScrollPane1.setViewportView(panel);
@@ -134,6 +135,45 @@ public class PreValidacion extends javax.swing.JFrame {
         vista.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+        Inserciones_bd in= new Inserciones_bd();
+        int idValidacion=in.insertarValidacion();
+        int res=0;
+        if(idValidacion>0){
+            int numUsuarios= usuarios.size();
+            int i=0;
+            while(i<numUsuarios){
+                Consultas_bd cn= new Consultas_bd();
+                ArrayList<Activo_Modelo> activos= cn.consultarActivosPorUsuario(usuarios.get(i));
+                int numActivos=activos.size();
+                int j=0;
+                while(j<numActivos){
+                    int idActivo=activos.get(j).getId();
+                    Inserciones_bd insert= new Inserciones_bd();
+                    res+=insert.insertarValidacionDetalle(idValidacion, idActivo);
+                    j++;
+                }
+                i++;
+            }
+        }
+        if(res>0){
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Aviso: " + "Se ingresaron los datos correctamente",
+                    "Accion exitosa",
+                    JOptionPane.INFORMATION_MESSAGE);
+            this.hide();
+        } else{
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + "No se puedo completar la operacion",
+                    "Error Base de Datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+    }//GEN-LAST:event_btnCrearActionPerformed
 
     /**
      * @param args the command line arguments

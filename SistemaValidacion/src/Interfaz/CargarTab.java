@@ -9,7 +9,6 @@ import Modelo.*;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,7 +18,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -35,7 +33,14 @@ public class CargarTab {
         try {
             Consultas_bd cons = new Consultas_bd();
             ob = cons.consultarUsuarios();
-            //Datos de Tabla
+            if(ob.isEmpty()){
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Aviso: " + "No existen usuarios disponibles para validar",
+                    "Sin datos ",
+                    JOptionPane.OK_CANCEL_OPTION);
+            }    
+//Datos de Tabla
             DefaultTableModel modelo = new DefaultTableModel();
             tabla.setModel(modelo);
             modelo.addColumn("TODO");
@@ -44,7 +49,6 @@ public class CargarTab {
             modelo.addColumn("ACTIVOS");
             int tamaño = ob.size();
             int i = 0;
-
             while (i < tamaño) {
                 modelo.addRow(new Object[]{Boolean.FALSE, ob.get(i).getCedula(), ob.get(i).getNombre()
                     + " " + ob.get(i).getApellido(), ob.get(i).getCantidadActivos()});

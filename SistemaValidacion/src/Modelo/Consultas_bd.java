@@ -5,13 +5,15 @@
  */
 package Modelo;
 
+import com.devazt.networking.OnHttpRequestComplete;
+import com.devazt.networking.Response;
+import com.devazt.networking.HttpClient;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import sistemavalidacion.ConeccionSQL;
 
 /**
@@ -27,83 +29,110 @@ public class Consultas_bd {
        cn=con.conectar();
        }
     
+    
+
     public Usuario_Modelo consultarUsuario(String cedula){
-        String consulta = "Select * from usuario where CED_USU='"+cedula+"'";
-        Usuario_Modelo usu = null;
-        try {
-            st= cn.createStatement();
-            dato =st.executeQuery(consulta);
-            if (!dato.next()) {
-                return null;
-            }
-                usu = new Usuario_Modelo();
-                usu.setCedula(dato.getString(1));
-                usu.setNombre(dato.getString(2));
-                usu.setApellido(dato.getString(3));
-        } catch (SQLException ex) {
-            Logger.getLogger(ConeccionSQL.class.getName()).log(Level.SEVERE, null, ex);
+        ArrayList<Usuario_Modelo> usus=new ArrayList();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                            JSONObject ob= ususs.getJSONObject(i);
+                            Usuario_Modelo usu;
+                            usu=new Usuario_Modelo();
+                            usu.setCedula(ob.getString("CED_USU"));
+                            usu.setNombre(ob.getString("NOM_USU"));
+                            usu.setApellido(ob.getString("APE_USU"));
+                            usus.add(usu);
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/usuario?usuario="+cedula);
+        } catch (Exception e) {
         }
-        return usu;
-    }
-    public Activo_Modelo consultarActivoPorId(int id){
-        String consulta = "Select * from activos where ID_ACT="+id;
-        Activo_Modelo act = null;
-        try {
-            st= cn.createStatement();
-            dato =st.executeQuery(consulta);
-            if (!dato.next()) {
-                return null;
-            }
-                act = new Activo_Modelo();
-                act.setId(dato.getInt(1));
-                act.setUsuario(new Consultas_bd().consultarUsuario(dato.getString(2)));
-                act.setNombre(dato.getString(3));
-                act.setObservacion(dato.getString(4));
-        } catch (SQLException ex) {
-            Logger.getLogger(ConeccionSQL.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return act;
-    }
+        return usus.get(0);
+    } 
+    
     public ArrayList<Activo_Modelo> consultarActivosPorUsuario(String cedula){
         ArrayList<Activo_Modelo> acts= new ArrayList();
-        String consulta = "Select * from activos where CED_USU_PER='"+cedula+"'";
-        Activo_Modelo act = null;
-        try {
-            st= cn.createStatement();
-            dato =st.executeQuery(consulta);
-            while (dato.next()) {
-                act = new Activo_Modelo();
-                act.setId(dato.getInt(1));
-                act.setUsuario(new Consultas_bd().consultarUsuario(dato.getString(2)));
-                act.setNombre(dato.getString(3));
-                act.setObservacion(dato.getString(4));
-                acts.add(act);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ConeccionSQL.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject activos= new JSONObject(status.getResult());
+                        JSONArray actss= activos.getJSONArray("result");
+                        int i=0;
+                        while(i<actss.length()){
+                            JSONObject ob= actss.getJSONObject(i);
+                            Activo_Modelo act;
+                            act=new Activo_Modelo();
+                            act.setId(ob.getInt("ID_ACT"));
+                            act.setUsuario( new Consultas_bd().consultarUsuario(ob.getString("CED_USU_PER")));
+                            act.setNombre(ob.getString("NOM_ACT"));
+                            act.setObservacion(ob.getString("OBS_ACT"));    
+                            acts.add(act);
+                            i++;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/activo?activosByUser="+cedula);
+        } catch (Exception e) {
         }
         return acts;
-    }
+    }    
+
+    
     public ArrayList<Usuario_Modelo> consultarUsuarios(){
         ArrayList<Usuario_Modelo> usus= new ArrayList();
-        String consulta = "Select * from usuario";
-        Usuario_Modelo usu;
-        try{
-            st=cn.createStatement();
-            dato =st.executeQuery(consulta);
-            while(dato.next()){
-                usu=new Usuario_Modelo();
-               usu.setCedula(dato.getString(1));
-               usu.setNombre(dato.getString(2));
-               usu.setApellido(dato.getString(3));
-               usus.add(usu);
-            }  
-        } catch (SQLException ex) {
-            Logger.getLogger(ConeccionSQL.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                        while(i<ususs.length()){
+                            JSONObject ob= ususs.getJSONObject(i);
+                            Usuario_Modelo usu;
+                            usu=new Usuario_Modelo();
+                            usu.setCedula(ob.getString("CED_USU"));
+                            usu.setNombre(ob.getString("NOM_USU"));
+                            usu.setApellido(ob.getString("APE_USU"));
+                            usus.add(usu);
+                            i++;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/usuario?usuarioss");
+        } catch (Exception e) {
+                //return null;
         }
         return usus;
-        
-    }
-            
-    
+    }    
 }
