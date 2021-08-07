@@ -5,6 +5,7 @@
  */
 package sistemavalidacion;
 
+import Consumo_WS.Consultas_bd;
 import Modelo.*;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public class SistemaValidacion {
      */
     public static void main(String[] args) {
         Consultas_bd cb= new Consultas_bd();
-        ArrayList<Usuario_Modelo> uss;
-        uss=cb.consultarUsuarios();
+        ArrayList<Empleado> uss;
+        uss=cb.consultarEmpleados();
         int tamaño= uss.size();
         int i=0;
         System.out.println(tamaño);
@@ -33,7 +34,7 @@ public class SistemaValidacion {
             i++;
         }
         
-        ArrayList<Activo_Modelo> activos;
+        ArrayList<Activo> activos;
         activos=cb.consultarActivosPorUsuario("1804816104");
         int tam=activos.size();
         int j=0;

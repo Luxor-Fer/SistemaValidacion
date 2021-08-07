@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Modelo;
+package Consumo_WS;
 
 import com.devazt.networking.OnHttpRequestComplete;
 import com.devazt.networking.Response;
@@ -31,7 +31,10 @@ public class Inserciones_bd {
         cn = con.conectar();
     }
 
-    public int insertarValidacion() {
+    public int insertarValidacion(String nombre, String descripcion, int idUsuario) {
+        descripcion= descripcion.replaceAll(" ", "_");
+        nombre= nombre.replaceAll(" ", "_");
+        System.out.println("Nombre:"+nombre+" Descripcion:"+descripcion);
         idValidacion = 0;
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
@@ -48,12 +51,12 @@ public class Inserciones_bd {
                 }
             });
 
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?insertarValidacion");
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?insertarValidacion=1&Nombre="+nombre+"&Descripcion="+descripcion+"&idUsuario="+idUsuario);
         } catch (Exception e) {
         }
         return idValidacion;
     }
-    public int insertarValidacionDetalle(int idValidacion, int idActivo) {
+    public int insertarValidacionDetalle(int idValidacion, String idEmpleado) {
         resDetVal=0;
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
@@ -70,7 +73,7 @@ public class Inserciones_bd {
                 }
             });
 
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?idValidacion="+idValidacion+"&idActivo="+idActivo);
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?idValidacion="+idValidacion+"&idEmpleado="+idEmpleado);
             
         } catch (Exception e) {
         }
@@ -78,9 +81,6 @@ public class Inserciones_bd {
     }
     public static void main(String[] args) {
         Inserciones_bd in= new Inserciones_bd();
-        System.out.println(in.insertarValidacion());
-        
-        System.out.println(in.insertarValidacionDetalle(18, 6));
         
     }
 }

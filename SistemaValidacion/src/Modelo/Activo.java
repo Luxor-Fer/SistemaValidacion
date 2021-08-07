@@ -9,25 +9,25 @@ package Modelo;
  *
  * @author Mauricio
  */
-public class Activo_Modelo {
-    int id;
-    Usuario_Modelo usuario;
+public class Activo {
+    String Codigo;
+    Empleado usuario;
     String nombre;
     String observacion;
 
-    public int getId() {
-        return id;
+    public String getCodigo() {
+        return Codigo;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCodigo(String Codigo) {
+        this.Codigo = Codigo;
     }
 
-    public Usuario_Modelo getUsuario() {
+    public Empleado getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario_Modelo usuario) {
+    public void setEmpleado(Empleado usuario) {
         this.usuario = usuario;
     }
 
@@ -46,6 +46,7 @@ public class Activo_Modelo {
     public void setObservacion(String observacion) {
         this.observacion = observacion;
     }
+
     
     
     

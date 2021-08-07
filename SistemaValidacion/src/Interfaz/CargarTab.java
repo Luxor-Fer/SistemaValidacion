@@ -5,6 +5,7 @@
  */
 package Interfaz;
 
+import Consumo_WS.Consultas_bd;
 import Modelo.*;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -28,25 +29,25 @@ import javax.swing.table.TableColumnModel;
 public class CargarTab {
 
     public void tbUsuario(JTable tabla) {
-        ArrayList<Usuario_Modelo> ob;
-
+        ArrayList<Empleado> ob;
+        
         try {
             Consultas_bd cons = new Consultas_bd();
-            ob = cons.consultarUsuarios();
-            if(ob.isEmpty()){
+            ob = cons.consultarEmpleados();
+            if (ob.isEmpty()) {
                 JOptionPane.showMessageDialog(
-                    null,
-                    "Aviso: " + "No existen usuarios disponibles para validar",
-                    "Sin datos ",
-                    JOptionPane.OK_CANCEL_OPTION);
-            }    
+                        null,
+                        "Aviso: " + "No existen usuarios disponibles para validar",
+                        "Sin datos ",
+                        JOptionPane.OK_CANCEL_OPTION);
+            }
 //Datos de Tabla
             DefaultTableModel modelo = new DefaultTableModel();
             tabla.setModel(modelo);
-            modelo.addColumn("TODO");
+            modelo.addColumn("SELECCIONAR");
             modelo.addColumn("ID");
             modelo.addColumn("USUARIO");
-            modelo.addColumn("ACTIVOS");
+            modelo.addColumn("N° ACTIVOS");
             int tamaño = ob.size();
             int i = 0;
             while (i < tamaño) {
@@ -55,18 +56,13 @@ public class CargarTab {
                 i++;
             }
             TableColumnModel modeloColumna = tabla.getColumnModel();
-            //modeloColumna.getColumn(0).setCellEditor(new DefaultCellEditor());
-            JCheckBox h = new JCheckBox();
-            h.setText("TODO");
             TableColumn m = tabla.getColumnModel().getColumn(0);
             m.setCellEditor(tabla.getDefaultEditor(Boolean.class));
             m.setCellRenderer(tabla.getDefaultRenderer(Boolean.class));
-            m.setHeaderRenderer(new EditarCabeceraTabla(h));
-            m.setHeaderValue(Boolean.FALSE);
-            modeloColumna.getColumn(0).setPreferredWidth(315);
-            modeloColumna.getColumn(1).setPreferredWidth(315);
+            modeloColumna.getColumn(0).setPreferredWidth(200);
+            modeloColumna.getColumn(1).setPreferredWidth(250);
             modeloColumna.getColumn(2).setPreferredWidth(315);
-            modeloColumna.getColumn(3).setPreferredWidth(315);
+            modeloColumna.getColumn(3).setPreferredWidth(100);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(
@@ -76,54 +72,34 @@ public class CargarTab {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-    public void tbUsuarioActivo(JPanel panelP,ArrayList<String> usuarios) {
-        int tamaño= usuarios.size();
-        if(tamaño>0){
-            Consultas_bd bd= new Consultas_bd();
-            int i=0;
-            while(i<tamaño){
-            String cedula=usuarios.get(i).toString();
-            Usuario_Modelo us= new Usuario_Modelo();
-            us=bd.consultarUsuario(cedula);
-            JLabel id = new JLabel("      ID: "+us.getCedula());    
-            JLabel nombre = new JLabel("USUARIO: "+us.getNombre()+" "+us.getApellido());    
-            JLabel cantActivos = new JLabel("      ACTIVOS: "+us.getCantidadActivos());
-            JPanel panelEtiquetas = new JPanel();
-            panelEtiquetas.setLayout(new GridLayout(0,2));
-            panelEtiquetas.add(id);
-            panelEtiquetas.add(nombre);
-            panelEtiquetas.add(cantActivos);
-            JPanel panel = new JPanel();
-            panel.add(panelEtiquetas);
-            panelEtiquetas.setBorder(new TitledBorder(new EtchedBorder(), "Datos de Usuario"));
-            panelEtiquetas.setBackground(Color.WHITE);
-            JTable tabla = new JTable();
+
+    public void tbUsuarioActivo(JTable tabla, JTable tbUsuario) {
+        tabla.removeAll();
+        int i = 0;
+        int tamañoTb = tbUsuario.getRowCount();
+        if (tamañoTb > 0) {
             DefaultTableModel modelo = new DefaultTableModel();
             tabla.setModel(modelo);
-            modelo.addColumn("DETALLE");
-            modelo.addColumn("OBSERVACION");
-            ArrayList<Activo_Modelo> activos=bd.consultarActivosPorUsuario(cedula);
-                int j=0;
-                int tamAct=activos.size();
-                while(j<tamAct){
-                    modelo.addRow(new Object[]{activos.get(j).getNombre(), activos.get(j).getObservacion()});
-                    j++;
+            modelo.addColumn("Codigo");
+            modelo.addColumn("Nombre");
+            modelo.addColumn("ID Custodio");
+            modelo.addColumn("Nombre Custodio");
+            while (i < tamañoTb) {
+                boolean resp = (boolean) tbUsuario.getValueAt(i, 0);
+                if (resp) {
+                    Consultas_bd cs = new Consultas_bd();
+                    ArrayList<Activo> ob = cs.consultarActivosPorUsuario(String.valueOf(tbUsuario.getValueAt(i, 1)));
+                    int tamaño = ob.size();
+                    int j = 0;
+                    while (j<tamaño) {
+                        modelo.addRow(new Object[]{ob.get(j).getCodigo(),
+                             ob.get(j).getNombre(),
+                             ob.get(j).getUsuario().getCedula(),
+                             ob.get(j).getUsuario().getApellido() + " " + ob.get(j).getUsuario().getNombre()});
+                        j++;
+                    }
+
                 }
-                TableColumnModel modeloColumna = tabla.getColumnModel();
-                modeloColumna.getColumn(0).setPreferredWidth(8);
-                modeloColumna.getColumn(1).setPreferredWidth(10);
-                JTableHeader cabecera= tabla.getTableHeader();
-                JPanel panelTabla= new JPanel();
-                panelTabla.setBackground(Color.WHITE);
-                panelTabla.setBorder(new TitledBorder(new EtchedBorder(), "     Activos a su cargo"));
-                panelTabla.setLayout(new GridLayout(0,1));
-                panelTabla.add(cabecera);
-                panelTabla.add(tabla);
-                panel.add(panelTabla);
-                panel.setLayout(new GridLayout(0,1));
-                panel.setBorder(new TitledBorder(new EtchedBorder(), ""));
-                panel.setBackground(Color.CYAN);
-                panelP.add(panel);
                 i++;
             }
         }

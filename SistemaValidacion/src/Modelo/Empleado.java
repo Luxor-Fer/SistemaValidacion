@@ -5,19 +5,20 @@
  */
 package Modelo;
 
+import Consumo_WS.Consultas_bd;
 import java.util.ArrayList;
 
 /**
  *
  * @author Mauricio
  */
-public class Usuario_Modelo {
+public class Empleado {
     String cedula;
     String nombre;
     String apellido;
-    ArrayList<Activo_Modelo> activos;
+    ArrayList<Activo> activos;
     
-    public Usuario_Modelo(){
+    public Empleado(){
         
     }
 
@@ -48,7 +49,7 @@ public class Usuario_Modelo {
         this.activos= new ArrayList();
         this.activos= new Consultas_bd().consultarActivosPorUsuario(cedula);
     }
-    public ArrayList<Activo_Modelo> getActivos(){
+    public ArrayList<Activo> getActivos(){
         cargarActivos();
         return this.activos;
     }
