@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import Iconos.MenuItem;
-import Interfaz.IValidacion_crea;
-import Modelo.Usuario;
+import Interfaz.*;
+import Modelo.*;
 import javax.swing.JFrame;
 
 /**
@@ -131,13 +131,13 @@ public class Menu extends javax.swing.JFrame {
          return opPerfil = new MenuItem(null, s3+"Editar Proceso", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                /*VPerfil vt=new VPerfil();
-                vt.cargarGestor(gestor);
+                IValidacion_edita vt=new IValidacion_edita();
                 jtpVentanas.removeAll();
                 jtpVentanas.add(vt);
+                vt.cargarUsuario(us);
                 vt.show();
                 jtpVentanas.repaint();
-               */ 
+               
             }
         });
     }

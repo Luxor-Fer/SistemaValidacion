@@ -5,6 +5,7 @@
  */
 package Modelo;
 
+import Consumo_WS.Consultas_bd;
 import java.util.ArrayList;
 
 /**
@@ -48,10 +49,14 @@ public class EmpleadoValidacion {
     public void setObservacion(String Observacion) {
         this.Observacion = Observacion;
     }
-//    public int cantidadActivos(){
-//        ArrayList<ActivoValidacion> activos= new ArrayList();
-//       activos=*/
-//    }
-//    
+    public ArrayList<ActivoValidacion> getActivosValidacion(){
+        ArrayList<ActivoValidacion> activos= new ArrayList();
+       return new Consultas_bd().consultarActivosValByIdEmpVal(this.Id);
+    }
+    public int cantidadActivos(){
+        return getActivosValidacion().size();
+    }
+    
+    
     
 }

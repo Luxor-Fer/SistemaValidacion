@@ -71,6 +71,10 @@ public class Consultas_bd {
         }
         return msgLog;
     }
+    public Usuario getLogin(){
+        return this.log;
+    }
+    
     public Usuario obtenerUsuarioById(int id){
             try { 
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
@@ -105,8 +109,51 @@ public class Consultas_bd {
         }
         return log;
     }
-    public Usuario getLogin(){
-        return this.log;
+    public Validacion obtenerValidacionById(int id){
+        Validacion val= new Validacion();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        String res=usuarios.getString("status");
+                        if(res.equals("ok")){
+                            JSONArray arrayRes= usuarios.getJSONArray("result");
+                            JSONObject ob= arrayRes.getJSONObject(0);                      
+                            val.setId(ob.getInt("Id"));
+                            val.setNombre(ob.getString("NOM_VAL"));
+                            val.setDescripcion(ob.getString("DES_VAL"));
+                            Date fechaCrea= new SimpleDateFormat("yyyy/dd/MM").parse(ob.getString("FEC_CRE_VAL"));
+                            val.setFechaCreacion(fechaCrea);
+                            String fechaActualiza= ob.getString("FEC_ACT_VAL");
+                            if(fechaActualiza!="0"){
+                               Date fechaAct= new SimpleDateFormat("yyyy/dd/MM").parse(fechaActualiza);
+                                val.setFechaActualizacion(fechaAct);
+                            }
+                            val.setUsuarioCrea(new Consultas_bd().obtenerUsuarioById(ob.getInt("ID_USU_CVAL")));
+                            int UsuarioActualiza= ob.getInt("ID_USU_AVAL");
+                            if(UsuarioActualiza!=0){
+                                val.setUsuarioActualiza(new Consultas_bd().obtenerUsuarioById(UsuarioActualiza));
+                            }
+                            val.setEstado(ob.getString("EST_VAL"));
+                            val.setObservacion(ob.getString("OBS_VAL"));
+                                                      
+                        }
+                            
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?validacionById="+id);
+        } catch (Exception e) {
+        }
+        return val;
     }
     public Empleado consultarEmpleado(String cedula){
         ArrayList<Empleado> usus= new ArrayList();
@@ -139,6 +186,98 @@ public class Consultas_bd {
         }
         return usus.get(0);
     }
+    public Activo obtenerActivoByCodigo(String codigo){
+        Activo act= new Activo();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                            JSONObject ob= ususs.getJSONObject(i);
+                          
+                            act.setCodigo(ob.getString("COD_ACT"));
+                            act.setNombre(ob.getString("NOM_ACT"));
+                            act.setEmpleado(new Consultas_bd().consultarEmpleado(ob.getString("CED_EMP_ACT")));
+                            act.setObservacion(ob.getString("OBS_ACT"));
+                            
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Activo?activoByCodigo="+codigo);
+        } catch (Exception e) {
+        }
+        return act;
+    }
+    public EmpleadoValidacion obtenerEmpleadoValidacionById(int id){
+        EmpleadoValidacion empv= new EmpleadoValidacion();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                            JSONObject ob= ususs.getJSONObject(i);
+                            empv.setId(ob.getInt("Id"));
+                            empv.setIdValidacion( new Consultas_bd().obtenerValidacionById(ob.getInt("ID_VAL_EMPV")));
+                            empv.setIdEmpleado(new Consultas_bd().consultarEmpleado(ob.getString("CED_EMP_EMPV")));
+                            empv.setObservacion(ob.getString("OBS_EMPV"));
+                      
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?EmpleadoValidacionById="+id);
+        } catch (Exception e) {
+        }
+        return empv;
+    }
+    public ActivoValidacion obtenerActivoValidacionById(int id){
+        ActivoValidacion actv= new ActivoValidacion();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                            JSONObject ob= ususs.getJSONObject(i);
+                            actv.setId(ob.getInt("Id"));
+                            actv.setIdEmpVal(new Consultas_bd().obtenerEmpleadoValidacionById(ob.getInt("ID_EMPV_ACTV")));
+                            actv.setIdActivo(new Consultas_bd().obtenerActivoByCodigo(ob.getString("ID_ACT_ACTV")));
+                            actv.setEstado(ob.getInt("EST_ACTV"));
+                            actv.setObservacion(ob.getString("OBS_ACTV"));
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?ActivoValidacionById="+id);
+        } catch (Exception e) {
+        }
+        return actv;
+    }
+    
     public ArrayList<Activo> consultarActivosPorUsuario(String cedula){
         ArrayList<Activo> acts= new ArrayList();
             try {
@@ -210,6 +349,131 @@ public class Consultas_bd {
         }
         return usus;
     }
+    public ArrayList<Validacion> consultarValidaciones(String estado){
+        ArrayList<Validacion> vals= new ArrayList();
+            try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONArray ususs = new JSONArray(status.getResult());
+                        System.out.println(ususs.toString());
+                        int i=0;
+                        while(i<ususs.length()){
+                            JSONObject ob= ususs.getJSONObject(i);
+                            Validacion val;
+                            val= new Validacion();
+                            
+                            val.setId(ob.getInt("Id"));
+                            System.out.println(ob.toString());
+                            val.setNombre(ob.getString("NOM_VAL"));
+                            val.setDescripcion(ob.getString("DES_VAL"));
+                            System.out.println(ob.getString("FEC_CRE_VAL"));
+                            Date fechaCrea= new SimpleDateFormat("yyyy-MM-dd").parse(ob.getString("FEC_CRE_VAL"));
+                            val.setFechaCreacion(fechaCrea);
+                            String fechaActualiza= ob.getString("FEC_ACT_VAL");
+                            System.out.println(ob.getString("FEC_ACT_VAL")+" con fecha");
+                            if(!fechaActualiza.equals("0")){
+                                System.out.println("si entro");
+                               Date fechaAct= new SimpleDateFormat("yyyy-MM-dd").parse(fechaActualiza);
+                                val.setFechaActualizacion(fechaAct);
+                            }
+                            val.setUsuarioCrea(new Consultas_bd().obtenerUsuarioById(ob.getInt("ID_USU_CVAL")));
+                            int UsuarioActualiza= ob.getInt("ID_USU_AVAL");
+                            if(UsuarioActualiza!=0){
+                                val.setUsuarioActualiza(new Consultas_bd().obtenerUsuarioById(UsuarioActualiza));
+                            }
+                            val.setEstado(ob.getString("EST_VAL"));
+                            val.setObservacion(ob.getString("OBS_VAL"));
+                            
+                            vals.add(val);
+                            i++;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?ValidacionesByEstado="+estado);
+        } catch (Exception e) {
+                //return null;
+        }
+        return vals;
+    }
+    public ArrayList<EmpleadoValidacion> consultarEmpleadosValByIdVal(int idVal){
+        ArrayList<EmpleadoValidacion> empvs= new ArrayList();
+            try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONArray ususs = new JSONArray(status.getResult());
+                        int i=0;
+                        while(i<ususs.length()){
+                            JSONObject ob= ususs.getJSONObject(i);
+                            EmpleadoValidacion empv;
+                            empv= new EmpleadoValidacion();
+                            empv.setId(ob.getInt("Id"));
+                            empv.setIdValidacion( new Consultas_bd().obtenerValidacionById(ob.getInt("ID_VAL_EMPV")));
+                            empv.setIdEmpleado(new Consultas_bd().consultarEmpleado(ob.getString("CED_EMP_EMPV")));
+                            empv.setObservacion(ob.getString("OBS_EMPV"));
+                            empvs.add(empv);
+                            i++;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?EmpleadosValidacionByIdVal=1&ID_VAL="+idVal);
+        } catch (Exception e) {
+                //return null;
+        }
+        return empvs;
+    }
+    public ArrayList<ActivoValidacion> consultarActivosValByIdEmpVal(int idEmpVal){
+        ArrayList<ActivoValidacion> actvs= new ArrayList();
+            try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONArray ususs = new JSONArray(status.getResult());
+                        int i=0;
+                        while(i<ususs.length()){
+                            JSONObject ob= ususs.getJSONObject(i);
+                            ActivoValidacion actv= new ActivoValidacion();
+                            actv.setId(ob.getInt("Id"));
+                            actv.setIdEmpVal(new Consultas_bd().obtenerEmpleadoValidacionById(ob.getInt("ID_EMPV_ACTV")));
+                            actv.setIdActivo(new Consultas_bd().obtenerActivoByCodigo(ob.getString("ID_ACT_ACTV")));
+                            actv.setEstado(ob.getInt("EST_ACTV"));
+                            actv.setObservacion(ob.getString("OBS_ACTV"));
+                            actvs.add(actv);
+                            i++;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?ActivosValidacionByIdEmpVal="+idEmpVal);
+        } catch (Exception e) {
+                //return null;
+        }
+        return actvs;
+    }
     public String pruebaConeccionApi(){
             try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
@@ -233,51 +497,4 @@ public class Consultas_bd {
         }
         return respuesta;
     }
-    public ArrayList<Validacion> consultarValidaciones(String estado){
-        ArrayList<Validacion> vals= new ArrayList();
-            try {
-            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
-            @Override
-            public void onComplete(Response status){
-                if(status.isSuccess())
-                {
-                    try {
-                        JSONArray ususs = new JSONArray(status.getResult());
-                        int i=0;
-                        while(i<ususs.length()){
-                            JSONObject ob= ususs.getJSONObject(i);
-                            Validacion val;
-                            val= new Validacion();
-                            val.setId(ob.getInt("Id"));
-                            val.setNombre(ob.getString("NOM_VAL"));
-                            val.setDescripcion(ob.getString("DES_VAL"));
-                            Date fechaCrea= new SimpleDateFormat("yyyy/dd/MM").parse(ob.getString("FEC_CRE_VAL"));
-                            val.setFechaCreacion(fechaCrea);
-                            String fechaActualiza= ob.getString("FEC_ACT_VAL");
-                            if(fechaActualiza!="0"){
-                               Date fechaAct= new SimpleDateFormat("yyyy/dd/MM").parse(fechaActualiza);
-                                val.setFechaActualizacion(fechaAct);
-                            }
-//                            val.getUsuarioCrea(ob.getString("ID_USU_CVAL"));
-//                            
-//                            usu=new Empleado();
-//                            usu.setCedula(ob.getString("Id"));
-//                            usu.setNombre(ob.getString("NOM_EMP"));
-//                            usu.setApellido(ob.getString("APE_EMP"));
-//                            usus.add(usu);
-//                            i++;
-                        }
-                    } catch (Exception e) {
-                    }
-                }
-                throw new UnsupportedOperationException("Not suported yet");
-                }
-            });
-            
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Empleado?empleadoss");
-        } catch (Exception e) {
-                //return null;
-        }
-        return vals;
-    }    
 }

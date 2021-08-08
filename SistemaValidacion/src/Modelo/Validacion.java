@@ -5,6 +5,8 @@
  */
 package Modelo;
 
+import Consumo_WS.Consultas_bd;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -19,6 +21,15 @@ public class Validacion {
     Date FechaActualizacion;
     Usuario UsuarioCrea;
     Usuario UsuarioActualiza;
+    String Estado;
+
+    public String getEstado() {
+        return Estado;
+    }
+
+    public void setEstado(String Estado) {
+        this.Estado = Estado;
+    }
     String Observacion;
 
     public int getId() {
@@ -83,6 +94,25 @@ public class Validacion {
 
     public void setObservacion(String Observacion) {
         this.Observacion = Observacion;
+    }
+    public int cantidadEmpleados(){
+        return getEmpleadosValidacion().size();
+    }
+    
+    public ArrayList<EmpleadoValidacion> getEmpleadosValidacion(){
+        Consultas_bd cns= new Consultas_bd();
+        return cns.consultarEmpleadosValByIdVal(this.Id);
+    }
+    public int cantidadActivos(){
+        ArrayList<EmpleadoValidacion> emps= getEmpleadosValidacion();
+        int tamaño=emps.size();
+        int i=0;
+        int cantidad=0;
+        while(i<tamaño){
+            cantidad+=emps.get(i).cantidadActivos();
+            i++;
+        }
+        return cantidad;
     }
    
     

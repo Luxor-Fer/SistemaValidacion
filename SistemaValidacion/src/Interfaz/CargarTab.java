@@ -9,6 +9,7 @@ import Consumo_WS.Consultas_bd;
 import Modelo.*;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -102,6 +103,102 @@ public class CargarTab {
                 }
                 i++;
             }
+        }
+    }
+    public void tbValidaciones(JTable tabla, String estado) {
+        ArrayList<Validacion> ob;
+        
+        try {
+            Consultas_bd cons = new Consultas_bd();
+            ob = cons.consultarValidaciones(estado);
+            System.out.println(ob.toString());
+            if (ob.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Aviso: " + "No existen usuarios disponibles para validar",
+                        "Sin datos ",
+                        JOptionPane.OK_CANCEL_OPTION);
+            }
+//Datos de Tabla
+            DefaultTableModel modelo = new DefaultTableModel();
+            tabla.setModel(modelo);
+            modelo.addColumn("ID");
+            modelo.addColumn("Nombre");
+            modelo.addColumn("Descripcion");
+            modelo.addColumn("Fecha de Creación");
+            modelo.addColumn("N° Empleados");
+            modelo.addColumn("N° Activos");
+            int tamaño = ob.size();
+            int i = 0;
+            while (i < tamaño) {
+                modelo.addRow(new Object[]{ob.get(i).getId(), ob.get(i).getNombre()
+                        ,ob.get(i).getDescripcion()
+                        , new SimpleDateFormat("yyyy/MM/dd").format(ob.get(i).getFechaCreacion())
+                        , ob.get(i).cantidadEmpleados()
+                        , ob.get(i).cantidadActivos()});
+                i++;
+            }
+            TableColumnModel modeloColumna = tabla.getColumnModel();
+            modeloColumna.getColumn(0).setPreferredWidth(10);
+            modeloColumna.getColumn(1).setPreferredWidth(200);
+            modeloColumna.getColumn(2).setPreferredWidth(300);
+            modeloColumna.getColumn(3).setPreferredWidth(100);
+            modeloColumna.getColumn(4).setPreferredWidth(75);
+            modeloColumna.getColumn(5).setPreferredWidth(75);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + "No se puede conectar a la base de datos",
+                    "Error Base de Datos ",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void tbEmpValidaciones(JTable tabla, int idVal) {
+        ArrayList<EmpleadoValidacion> ob;
+        
+        try {
+            Consultas_bd cons = new Consultas_bd();
+            ob = cons.consultarEmpleadosValByIdVal(idVal);
+            System.out.println(ob.toString());
+            if (ob.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Aviso: " + "No existen usuarios disponibles para validar",
+                        "Sin datos ",
+                        JOptionPane.OK_CANCEL_OPTION);
+            }
+//Datos de Tabla
+            DefaultTableModel modelo = new DefaultTableModel();
+            tabla.setModel(modelo);
+            modelo.addColumn("Cedula");
+            modelo.addColumn("Nombre");
+            modelo.addColumn("Apellido");
+            modelo.addColumn("N° Activos");
+            modelo.addColumn("");
+            int tamaño = ob.size();
+            int i = 0;
+            while (i < tamaño) {
+                modelo.addRow(new Object[]{ob.get(i).getIdEmpleado().getCedula()
+                        , ob.get(i).getIdEmpleado().getNombre()
+                        , ob.get(i).getIdEmpleado().getApellido()
+                        , ob.get(i).cantidadActivos()
+                        , ob.get(i).getId()});
+                i++;
+            }
+            TableColumnModel modeloColumna = tabla.getColumnModel();
+            modeloColumna.getColumn(0).setPreferredWidth(100);
+            modeloColumna.getColumn(1).setPreferredWidth(100);
+            modeloColumna.getColumn(2).setPreferredWidth(100);
+            modeloColumna.getColumn(3).setPreferredWidth(100);
+            modeloColumna.getColumn(4).setPreferredWidth(1);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + "No se puede conectar a la base de datos",
+                    "Error Base de Datos ",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
