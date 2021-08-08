@@ -9,6 +9,7 @@ import Consumo_WS.Consultas_bd;
 import Modelo.*;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
@@ -31,7 +32,7 @@ public class CargarTab {
 
     public void tbUsuario(JTable tabla) {
         ArrayList<Empleado> ob;
-        
+
         try {
             Consultas_bd cons = new Consultas_bd();
             ob = cons.consultarEmpleados();
@@ -92,11 +93,11 @@ public class CargarTab {
                     ArrayList<Activo> ob = cs.consultarActivosPorUsuario(String.valueOf(tbUsuario.getValueAt(i, 1)));
                     int tamaño = ob.size();
                     int j = 0;
-                    while (j<tamaño) {
+                    while (j < tamaño) {
                         modelo.addRow(new Object[]{ob.get(j).getCodigo(),
-                             ob.get(j).getNombre(),
-                             ob.get(j).getUsuario().getCedula(),
-                             ob.get(j).getUsuario().getApellido() + " " + ob.get(j).getUsuario().getNombre()});
+                            ob.get(j).getNombre(),
+                            ob.get(j).getUsuario().getCedula(),
+                            ob.get(j).getUsuario().getApellido() + " " + ob.get(j).getUsuario().getNombre()});
                         j++;
                     }
 
@@ -105,13 +106,13 @@ public class CargarTab {
             }
         }
     }
+
     public void tbValidaciones(JTable tabla, String estado) {
         ArrayList<Validacion> ob;
-        
+
         try {
             Consultas_bd cons = new Consultas_bd();
             ob = cons.consultarValidaciones(estado);
-            System.out.println(ob.toString());
             if (ob.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         null,
@@ -131,11 +132,11 @@ public class CargarTab {
             int tamaño = ob.size();
             int i = 0;
             while (i < tamaño) {
-                modelo.addRow(new Object[]{ob.get(i).getId(), ob.get(i).getNombre()
-                        ,ob.get(i).getDescripcion()
-                        , new SimpleDateFormat("yyyy/MM/dd").format(ob.get(i).getFechaCreacion())
-                        , ob.get(i).cantidadEmpleados()
-                        , ob.get(i).cantidadActivos()});
+                modelo.addRow(new Object[]{ob.get(i).getId(), ob.get(i).getNombre(),
+                     ob.get(i).getDescripcion(),
+                     new SimpleDateFormat("yyyy/MM/dd").format(ob.get(i).getFechaCreacion()),
+                     ob.get(i).cantidadEmpleados(),
+                     ob.get(i).cantidadActivos()});
                 i++;
             }
             TableColumnModel modeloColumna = tabla.getColumnModel();
@@ -154,13 +155,13 @@ public class CargarTab {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
     public void tbEmpValidaciones(JTable tabla, int idVal) {
         ArrayList<EmpleadoValidacion> ob;
-        
+
         try {
             Consultas_bd cons = new Consultas_bd();
             ob = cons.consultarEmpleadosValByIdVal(idVal);
-            System.out.println(ob.toString());
             if (ob.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         null,
@@ -179,11 +180,11 @@ public class CargarTab {
             int tamaño = ob.size();
             int i = 0;
             while (i < tamaño) {
-                modelo.addRow(new Object[]{ob.get(i).getIdEmpleado().getCedula()
-                        , ob.get(i).getIdEmpleado().getNombre()
-                        , ob.get(i).getIdEmpleado().getApellido()
-                        , ob.get(i).cantidadActivos()
-                        , ob.get(i).getId()});
+                modelo.addRow(new Object[]{ob.get(i).getIdEmpleado().getCedula(),
+                     ob.get(i).getIdEmpleado().getNombre(),
+                     ob.get(i).getIdEmpleado().getApellido(),
+                     ob.get(i).cantidadActivos(),
+                     ob.get(i).getId()});
                 i++;
             }
             TableColumnModel modeloColumna = tabla.getColumnModel();
@@ -191,7 +192,7 @@ public class CargarTab {
             modeloColumna.getColumn(1).setPreferredWidth(100);
             modeloColumna.getColumn(2).setPreferredWidth(100);
             modeloColumna.getColumn(3).setPreferredWidth(100);
-            modeloColumna.getColumn(4).setPreferredWidth(1);
+            modeloColumna.getColumn(4).setPreferredWidth(0);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(
@@ -200,6 +201,61 @@ public class CargarTab {
                     "Error Base de Datos ",
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void tbActValidaciones(JTable tabla, JTable empValidacion) {
+        int tamañoTabEmpVal = empValidacion.getRowCount();
+        int j = 0;
+        DefaultTableModel modelo = new DefaultTableModel();
+                tabla.setModel(modelo);
+                modelo.addColumn("Codigo");
+                modelo.addColumn("Nombre");
+                modelo.addColumn("ID Custodio");
+                modelo.addColumn("Nombre Custodio");
+        while (j < tamañoTabEmpVal) {
+            int idEmpVal = Integer.parseInt(empValidacion.getValueAt(j, 4).toString());
+            ArrayList<ActivoValidacion> ob;
+
+            try {
+                Consultas_bd cons = new Consultas_bd();
+                ob = cons.consultarActivosValByIdEmpVal(idEmpVal);
+
+                if (ob.isEmpty()) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Aviso: " + "No existen usuarios disponibles para validar",
+                            "Sin datos ",
+                            JOptionPane.OK_CANCEL_OPTION);
+                }
+//Datos de Tabla
+                
+                int tamaño = ob.size();
+                int i = 0;
+                while (i < tamaño) {
+                    modelo.addRow(new Object[]{ob.get(i).getIdActivo().getCodigo()
+                        , ob.get(i).getIdActivo().getNombre()
+                        , ob.get(i).getIdActivo().getUsuario().getCedula()
+                        , ob.get(i).getIdActivo().getUsuario().getNombre()+" "+ob.get(i).getIdActivo().getUsuario().getApellido()
+                        });
+                    i++;
+                }
+                
+
+            } catch (HeadlessException e) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error: " + "No se puede conectar a la base de datos" + e.getMessage().toString(),
+                        "Error Base de Datos ",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+            j++;
+        }
+        TableColumnModel modeloColumna = tabla.getColumnModel();
+                modeloColumna.getColumn(0).setPreferredWidth(100);
+                modeloColumna.getColumn(1).setPreferredWidth(150);
+                modeloColumna.getColumn(2).setPreferredWidth(100);
+                modeloColumna.getColumn(3).setPreferredWidth(250);
+
     }
 
 }

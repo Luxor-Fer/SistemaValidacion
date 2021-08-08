@@ -14,19 +14,21 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+
 /**
  *
  * @author USUARIO
  */
-public class IValidacion_crea extends javax.swing.JInternalFrame {
+public class IValidacion_añadir extends javax.swing.JFrame {
 
     /**
      * Creates new form Interfaz
      */
     Usuario us;
+    int idValidacion;
+    IValidacion_edita edicion;
     
-
-    public IValidacion_crea() {
+    public IValidacion_añadir() {
         initComponents();
         cargarDatos();
         estadoBotonCargarValidacion();
@@ -35,12 +37,20 @@ public class IValidacion_crea extends javax.swing.JInternalFrame {
     public void cargarUsuario(Usuario u) {
         this.us = u;
     }
-
+    public void cargarVentanaEdicion(IValidacion_edita ed){
+        this.edicion=ed;
+    }
+    public void cargarDatosValidacion(int idVal, String nombre, String descripcion){
+        this.idValidacion=idVal;
+        this.txtNombre.setText(nombre);
+        this.txtDescripcion.setText(descripcion);
+    }
     public void cargarDatos() {
         jtUsuario.removeAll();
         CargarTab tabla = new CargarTab();
         tabla.tbUsuario(jtUsuario);
     }
+
     public void estadoBotonCargarValidacion() {
         if (existenSeleccionados()) {
             btnCrear.setEnabled(true);
@@ -102,7 +112,7 @@ public class IValidacion_crea extends javax.swing.JInternalFrame {
         jtDetalleValidacion = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(0, 153, 153));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
@@ -118,13 +128,16 @@ public class IValidacion_crea extends javax.swing.JInternalFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Descripcion");
 
+        txtNombre.setEditable(false);
+
+        txtDescripcion.setEditable(false);
         txtDescripcion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDescripcionActionPerformed(evt);
             }
         });
 
-        btnCrear.setText("Crear Validación");
+        btnCrear.setText("AÑADIR AL PROCESO");
         btnCrear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCrearActionPerformed(evt);
@@ -147,7 +160,7 @@ public class IValidacion_crea extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCrear, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCrear, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -302,8 +315,6 @@ public class IValidacion_crea extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        Inserciones_bd in = new Inserciones_bd();
-        int idValidacion = in.insertarValidacion(this.txtNombre.getText(), this.txtDescripcion.getText(), us.getId());
         int res = 0;
         if (idValidacion > 0) {
             int numUsuarios = this.jtUsuario.getRowCount();
@@ -314,17 +325,22 @@ public class IValidacion_crea extends javax.swing.JInternalFrame {
                         String idEmpleado = String.valueOf(jtUsuario.getValueAt(i, 1));
                         Inserciones_bd insert = new Inserciones_bd();
                         res+=insert.insertarValidacionDetalle(idValidacion, idEmpleado);
-                    
                 }
                 i++;
-            }                       
+            }
+            
+            
         if(res > 0) {
+            this.hide();
+            this.edicion.cargarDatos();
+            this.edicion.cargarDetalles(idValidacion);
             JOptionPane.showMessageDialog(
                     null,
                     " Aviso: " + " Se ingresaron los datos correctamente ",
                     " Acción exitosa ",
                     JOptionPane.INFORMATION_MESSAGE);
-            this.hide();
+            this.edicion.show();
+            
         }else {
             JOptionPane.showMessageDialog(
                     null,
@@ -364,21 +380,23 @@ public class IValidacion_crea extends javax.swing.JInternalFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(IValidacion_crea.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IValidacion_añadir.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(IValidacion_crea.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IValidacion_añadir.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(IValidacion_crea.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IValidacion_añadir.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(IValidacion_crea.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IValidacion_añadir.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new IValidacion_crea().setVisible(true);
+                new IValidacion_añadir().setVisible(true);
             }
         });
     }

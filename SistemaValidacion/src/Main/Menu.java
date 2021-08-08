@@ -31,52 +31,15 @@ public class Menu extends javax.swing.JFrame {
         ImageIcon iconNext = new ImageIcon(getClass().getResource("/Iconos/next.png"));*/
     
         MenuItem mpVlidaciones;
-        MenuItem mpBodegasProductos;
-        MenuItem mpPersonas;
-        MenuItem mpCompras;
-        MenuItem mpVentas;
-        MenuItem mpReportes;
+        MenuItem OPValidacion;
+        MenuItem smValidaciones;
+        MenuItem smReportes;
+        MenuItem opCrearValidacion;
+        MenuItem opEditarValidacion;
+        MenuItem opEliminarValidacion;
+        MenuItem opListaValidaciones;
         
         
-        MenuItem smParametrosAcceso;
-        MenuItem smAccesos;
-        MenuItem smParametrosPersona;
-        MenuItem smParametrosProducto;
-        MenuItem smParametrosComprobante;
-        MenuItem smParametrosRetencion;
-        
-        MenuItem opPerfil;
-        MenuItem opPuntoEmision;
-        MenuItem opUsuario;
-        MenuItem opAsignacion;
-        MenuItem opTipoIdentificacion;
-        MenuItem opTipoContribuyente;
-        MenuItem opCategoria;
-        MenuItem opTipoIVA;
-        MenuItem opTipoComprobante;
-        MenuItem opFormaPago;
-        MenuItem opTipoRetencion;
-        MenuItem opConceptoRetencion;
-        MenuItem opProducto;
-        MenuItem opBodega;
-        MenuItem opPersona;
-        MenuItem opCompra;
-        MenuItem opRetencion;
-        MenuItem opVenta;
-        
-        MenuItem rpUltimaCompra;
-        MenuItem rpUltimaRetencion;
-        MenuItem rpCierreCaja;
-        MenuItem rpUltimaVenta;
-        MenuItem rpListaCompras;
-        MenuItem rpListaVentas;
-        MenuItem rpListaRetenciones;
-        MenuItem rpF101;
-        MenuItem rpF103;
-        MenuItem rpF104;
-        MenuItem rpKardex;
-        
-        MenuItem cxAccesoExcel;
         
         String s3= "       ♦";//sangriaOpcionNivel2
         String s2=" •";//sangriaOpcionNivel1
@@ -103,21 +66,19 @@ public class Menu extends javax.swing.JFrame {
       return mpVlidaciones = new MenuItem(null, "Gestor de Validacion", null, cargarSmParametrosValidaciones(),cargarSmReportesValidaciones());        
     }  
     
-    
+   
     public MenuItem cargarSmParametrosValidaciones(){
-        return smParametrosAcceso = new MenuItem(null, s1+"Crear/Editar/Eliminar", null, cargarOpCrearValidacion(),cargarOpEditarValidacion(), cargarOpEliminarValidacion());
+        return smValidaciones = new MenuItem(null, s1+"Crear/Editar/Eliminar", null, cargarOpCrearValidacion(),cargarOpEditarValidacion(), cargarOpEliminarValidacion());
     }
     public MenuItem cargarSmReportesValidaciones(){
-        return smParametrosAcceso = new MenuItem(null, s1+"Reportes", null,cargarOpListaValidaciones());
+        return smReportes = new MenuItem(null, s1+"Reportes", null,cargarOpListaValidaciones());
     }
     
-
     public MenuItem cargarOpCrearValidacion(){
-         return opPerfil = new MenuItem(null, s3+"Crear Proceso", new ActionListener() {
+         return opCrearValidacion = new MenuItem(null, s3+"Crear Proceso", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 IValidacion_crea vt=new IValidacion_crea();
-                //vt.cargarGestor(gestor);
                 jtpVentanas.removeAll();
                 jtpVentanas.add(vt);
                 vt.cargarUsuario(us);
@@ -128,7 +89,7 @@ public class Menu extends javax.swing.JFrame {
         });
     }
     public MenuItem cargarOpEditarValidacion(){
-         return opPerfil = new MenuItem(null, s3+"Editar Proceso", new ActionListener() {
+         return opEditarValidacion = new MenuItem(null, s3+"Editar Proceso", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 IValidacion_edita vt=new IValidacion_edita();
@@ -142,30 +103,28 @@ public class Menu extends javax.swing.JFrame {
         });
     }
     public MenuItem cargarOpEliminarValidacion(){
-         return opPerfil = new MenuItem(null, s3+"Eliminar Proceso", new ActionListener() {
+         return opEliminarValidacion = new MenuItem(null, s3+"Eliminar Proceso", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                /*VPerfil vt=new VPerfil();
-                vt.cargarGestor(gestor);
+               IValidacion_elimina vt=new IValidacion_elimina();
                 jtpVentanas.removeAll();
                 jtpVentanas.add(vt);
+                vt.cargarUsuario(us);
                 vt.show();
                 jtpVentanas.repaint();
-               */ 
             }
         });
     }
     public MenuItem cargarOpListaValidaciones(){
-         return opPerfil = new MenuItem(null, s3+"Proceso de Validacion", new ActionListener() {
+         return opListaValidaciones = new MenuItem(null, s3+"Proceso de Validacion", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                /*VPerfil vt=new VPerfil();
-                vt.cargarGestor(gestor);
+                IReporte_valEstados vt=new IReporte_valEstados();
                 jtpVentanas.removeAll();
                 jtpVentanas.add(vt);
+                vt.cargarUsuario(us);
                 vt.show();
-                jtpVentanas.repaint();
-               */ 
+                jtpVentanas.repaint(); 
             }
         });
     }

@@ -23,7 +23,7 @@ import sistemavalidacion.ConeccionSQL;
  *
  * @author Mauricio
  */
-public class Consultas_bd {
+public class Consultas_bd extends Path_ApiRest {
     ResultSet dato;
     Statement st;
     Connection cn;
@@ -50,7 +50,6 @@ public class Consultas_bd {
                         if(res.equals("ok")){
                             JSONArray arrayRes= usuarios.getJSONArray("result");
                             JSONObject objeto= arrayRes.getJSONObject(0);
-                            System.out.println("entro a llenar usu");                            
                             log= new Usuario(objeto.getInt("Id"),objeto.getString("NOM_USU"), objeto.getString("COR_USU"),objeto.getString("PAS_USU"));
                             msgLog="ok";                           
                         }else{
@@ -66,7 +65,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/auth?u="+usuario+"&p="+pass);
+            cliente.excecute(getBaseURL_Usuarios()+"u="+usuario+"&p="+pass);
         } catch (Exception e) {
         }
         return msgLog;
@@ -88,7 +87,6 @@ public class Consultas_bd {
                         if(res.equals("ok")){
                             JSONArray arrayRes= usuarios.getJSONArray("result");
                             JSONObject objeto= arrayRes.getJSONObject(0);
-                            System.out.println("entro a llenar usu");                            
                             log= new Usuario(objeto.getInt("Id"),objeto.getString("NOM_USU"), objeto.getString("COR_USU"),objeto.getString("PAS_USU"));
                             msgLog="ok";                           
                         }else{
@@ -104,7 +102,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/auth?userById="+id);
+            cliente.excecute(getBaseURL_Usuarios()+"userById="+id);
         } catch (Exception e) {
         }
         return log;
@@ -150,7 +148,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?validacionById="+id);
+            cliente.excecute(getBaseURL_Validaciones()+"validacionById="+id);
         } catch (Exception e) {
         }
         return val;
@@ -181,7 +179,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Empleado?empleado="+cedula);
+            cliente.excecute(getBaseURL_Empleados()+"empleado="+cedula);
         } catch (Exception e) {
         }
         return usus.get(0);
@@ -212,7 +210,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Activo?activoByCodigo="+codigo);
+            cliente.excecute(getBaseURL_Activos()+"activoByCodigo="+codigo);
         } catch (Exception e) {
         }
         return act;
@@ -242,7 +240,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?EmpleadoValidacionById="+id);
+            cliente.excecute(getBaseURL_Validaciones()+"EmpleadoValidacionById="+id);
         } catch (Exception e) {
         }
         return empv;
@@ -272,7 +270,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?ActivoValidacionById="+id);
+            cliente.excecute(getBaseURL_Validaciones()+"ActivoValidacionById="+id);
         } catch (Exception e) {
         }
         return actv;
@@ -309,7 +307,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Activo?activosByUser="+cedula);
+            cliente.excecute(getBaseURL_Activos()+"activosByUser="+cedula);
         } catch (Exception e) {
         }
         return acts;
@@ -343,7 +341,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Empleado?empleadoss");
+            cliente.excecute(getBaseURL_Empleados()+"empleadoss");
         } catch (Exception e) {
                 //return null;
         }
@@ -359,7 +357,6 @@ public class Consultas_bd {
                 {
                     try {
                         JSONArray ususs = new JSONArray(status.getResult());
-                        System.out.println(ususs.toString());
                         int i=0;
                         while(i<ususs.length()){
                             JSONObject ob= ususs.getJSONObject(i);
@@ -367,16 +364,12 @@ public class Consultas_bd {
                             val= new Validacion();
                             
                             val.setId(ob.getInt("Id"));
-                            System.out.println(ob.toString());
                             val.setNombre(ob.getString("NOM_VAL"));
                             val.setDescripcion(ob.getString("DES_VAL"));
-                            System.out.println(ob.getString("FEC_CRE_VAL"));
                             Date fechaCrea= new SimpleDateFormat("yyyy-MM-dd").parse(ob.getString("FEC_CRE_VAL"));
                             val.setFechaCreacion(fechaCrea);
                             String fechaActualiza= ob.getString("FEC_ACT_VAL");
-                            System.out.println(ob.getString("FEC_ACT_VAL")+" con fecha");
                             if(!fechaActualiza.equals("0")){
-                                System.out.println("si entro");
                                Date fechaAct= new SimpleDateFormat("yyyy-MM-dd").parse(fechaActualiza);
                                 val.setFechaActualizacion(fechaAct);
                             }
@@ -398,7 +391,8 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?ValidacionesByEstado="+estado);
+            cliente.excecute(getBaseURL_Validaciones()+"ValidacionesByEstado="+estado);
+            
         } catch (Exception e) {
                 //return null;
         }
@@ -433,7 +427,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?EmpleadosValidacionByIdVal=1&ID_VAL="+idVal);
+            cliente.excecute(getBaseURL_Validaciones()+"EmpleadosValidacionByIdVal=1&ID_VAL="+idVal);
         } catch (Exception e) {
                 //return null;
         }
@@ -468,7 +462,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?ActivosValidacionByIdEmpVal="+idEmpVal);
+            cliente.excecute(getBaseURL_Validaciones()+"ActivosValidacionByIdEmpVal="+idEmpVal);
         } catch (Exception e) {
                 //return null;
         }
@@ -491,7 +485,7 @@ public class Consultas_bd {
                 }
             });
             
-            cliente.excecute("http://localhost/sisvalidacion/restApi/Validaciones?Test");
+            cliente.excecute(getBaseURL_Validaciones()+"Test");
         } catch (Exception e) {
                 //return null;
         }

@@ -18,23 +18,20 @@ import sistemavalidacion.ConeccionSQL;
  *
  * @author Mauricio
  */
-public class Inserciones_bd extends Path_ApiRest {
+public class Eliminaciones_bd extends Path_ApiRest{
 
     ResultSet dato;
     Statement st;
     Connection cn;
-    int idValidacion;
+    int idRes;
     int resDetVal;
 
-    public Inserciones_bd() {
+    public Eliminaciones_bd() {
         ConeccionSQL con = new ConeccionSQL();
         cn = con.conectar();
     }
 
-    public int insertarValidacion(String nombre, String descripcion, int idUsuario) {
-        descripcion= descripcion.replaceAll(" ", "_");
-        nombre= nombre.replaceAll(" ", "_");
-        idValidacion = 0;
+    public int eliminarEmpValidacion(int id) {
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
                 @Override
@@ -42,7 +39,7 @@ public class Inserciones_bd extends Path_ApiRest {
                     if (status.isSuccess()) {
                         try {
                             JSONObject usuarios = new JSONObject(status.getResult());
-                            idValidacion = usuarios.getInt("result");
+                            idRes = usuarios.getInt("result");
                         } catch (Exception e) {
                         }
                     }
@@ -50,21 +47,20 @@ public class Inserciones_bd extends Path_ApiRest {
                 }
             });
 
-            cliente.excecute(getBaseURL_Validaciones()+"insertarValidacion=1&Nombre="+nombre+"&Descripcion="+descripcion+"&idUsuario="+idUsuario);
+            cliente.excecute(getBaseURL_Validaciones()+"eliminarEmpValById="+id);
         } catch (Exception e) {
         }
-        return idValidacion;
+        return idRes;
     }
-    public int insertarValidacionDetalle(int idValidacion, String idEmpleado) {
-        resDetVal=0;
+    public int eliminarValidacion(int id) {
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
                 @Override
                 public void onComplete(Response status) {
                     if (status.isSuccess()) {
                         try {
-                            JSONObject detalleValidacion = new JSONObject(status.getResult());
-                            resDetVal = detalleValidacion.getInt("result");
+                            JSONObject usuarios = new JSONObject(status.getResult());
+                            idRes = usuarios.getInt("result");
                         } catch (Exception e) {
                         }
                     }
@@ -72,14 +68,10 @@ public class Inserciones_bd extends Path_ApiRest {
                 }
             });
 
-            cliente.excecute(getBaseURL_Validaciones()+"idValidacion="+idValidacion+"&idEmpleado="+idEmpleado);
-            
+            cliente.excecute(getBaseURL_Validaciones()+"eliminarValidacionById="+id);
         } catch (Exception e) {
         }
-        return resDetVal;
+        return idRes;
     }
-    public static void main(String[] args) {
-        Inserciones_bd in= new Inserciones_bd();
-        
-    }
+    
 }
