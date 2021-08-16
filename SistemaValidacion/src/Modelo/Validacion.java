@@ -96,7 +96,8 @@ public class Validacion {
         this.Observacion = Observacion;
     }
     public int cantidadEmpleados(){
-        return getEmpleadosValidacion().size();
+        Consultas_bd cns= new Consultas_bd();
+        return cns.getCantEmpleadosValidacionByIdVal(this.Id);
     }
     
     public ArrayList<EmpleadoValidacion> getEmpleadosValidacion(){
@@ -104,15 +105,8 @@ public class Validacion {
         return cns.consultarEmpleadosValByIdVal(this.Id);
     }
     public int cantidadActivos(){
-        ArrayList<EmpleadoValidacion> emps= getEmpleadosValidacion();
-        int tamaño=emps.size();
-        int i=0;
-        int cantidad=0;
-        while(i<tamaño){
-            cantidad+=emps.get(i).cantidadActivos();
-            i++;
-        }
-        return cantidad;
+        Consultas_bd cns= new Consultas_bd();
+        return cns.getCantActivosValidacionByIdVal(this.Id);
     }
    
     

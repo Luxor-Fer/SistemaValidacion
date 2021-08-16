@@ -30,6 +30,8 @@ public class Consultas_bd extends Path_ApiRest {
     String respuesta;
     Usuario log;
     String msgLog;
+    int cantActivos;
+    int cantEmpleados;
     public Consultas_bd() {
        ConeccionSQL con= new ConeccionSQL();
        cn=con.conectar();
@@ -490,5 +492,87 @@ public class Consultas_bd extends Path_ApiRest {
                 //return null;
         }
         return respuesta;
+    }
+    
+    public int getCantEmpleadosValidacionByIdVal(int idVal){
+        cantEmpleados=0;
+        ActivoValidacion actv= new ActivoValidacion();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                            JSONObject ob= ususs.getJSONObject(i);
+                            cantEmpleados=ob.getInt("CANT_EMP");
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute(getBaseURL_Validaciones()+"cantEmpleadosValidacionByIdVal="+idVal);
+        } catch (Exception e) {
+        }
+        return cantEmpleados;
+    }
+    public int getCantActivosValidacionByIdVal(int idVal){
+        cantActivos=0;
+        ActivoValidacion actv= new ActivoValidacion();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                            JSONObject ob= ususs.getJSONObject(i);
+                            cantActivos=ob.getInt("CANT_ACT");
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute(getBaseURL_Validaciones()+"cantActivosValidacionByIdVal="+idVal);
+        } catch (Exception e) {
+        }
+        return cantActivos;
+    }
+    public int getCantActivosValidacionByIdEmpVal(int idEmpVal){
+        cantActivos=0;
+        ActivoValidacion actv= new ActivoValidacion();
+            try { 
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete(){
+            @Override
+            public void onComplete(Response status){
+                if(status.isSuccess())
+                {
+                    try {
+                        JSONObject usuarios= new JSONObject(status.getResult());
+                        JSONArray ususs= usuarios.getJSONArray("result");
+                        int i=0;
+                            JSONObject ob= ususs.getJSONObject(i);
+                            cantActivos=ob.getInt("CANT_ACT");
+                    } catch (Exception e) {
+                    }
+                }
+                throw new UnsupportedOperationException("Not suported yet");
+                }
+            });
+            
+            cliente.excecute(getBaseURL_Validaciones()+"cantActivosValidacionByIdEmpVal="+idEmpVal);
+        } catch (Exception e) {
+        }
+        return cantActivos;
     }
 }

@@ -54,7 +54,7 @@ public class EmpleadoValidacion {
        return new Consultas_bd().consultarActivosValByIdEmpVal(this.Id);
     }
     public int cantidadActivos(){
-        return getActivosValidacion().size();
+        return new Consultas_bd().getCantActivosValidacionByIdEmpVal(this.Id);
     }
     
     
